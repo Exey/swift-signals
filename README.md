@@ -1,3 +1,3 @@
-# Signals: Think Outside the NSNotificationCenter.
+# Signals: Think Outside the NotificationCenter.
 
 In progress
