@@ -1,0 +1,9 @@
+swift-signals/Assets.xcassets
+swift-signals/Base.lproj
+.DS_Store
+swift-signalsUITests
+swift-signalsTests
+swift-signals.xcodeproj
+swift-signals/AppDelegate.swift
+swift-signals/Info.plist
+swift-signals/ViewController.swift
