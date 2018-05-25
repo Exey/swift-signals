@@ -2,41 +2,60 @@
 //  Slot.swift
 //  swift-signals
 //
-// The Slot protoco; defines the basic properties of a listener associated with a Signal.
-// Created by Exey Panteleev on 23/05/2018.
+//  The Slot class represents a signal slot.
+//  Created by Exey Panteleev on 24/05/2018.
 //
 
-import Foundation
+public class Slot: SlotProtocol, CustomStringConvertible {
 
-public protocol Slot {
+    private var signal: OnceSignalProtocol
     
-    associatedtype Observer
+    private var _priority = 0
+    public var priority: Int { return _priority }
+    private var _once = false
+    public var once: Bool { return _once }
     
-    /** The observer associated with this slot. */
-    var observer: Observer { get set }
+    public var enabled = true
+    public var observer: Any
+    public var params: [Any]?
     
-    /** Allows the Slot to inject parameters when posting. */
-    var params: [Any] { get set }
+    public var description: String {
+        return "[Slot observer: \(observer), once: \(once), priority: \(priority), enabled: \(enabled)]"
+    }
     
-    /** Whether this slot is automatically removed after it has been used once. */
-    var once: Bool { get }
+    /** Creates and returns a new Slot object. */
+    public init(observer: Any, signal: OnceSignalProtocol, once: Bool = true, priority: Int = 0) {
+        self.observer = observer
+        self.signal = signal
+        _once = once
+        _priority = priority
+    }
     
-    /** The priority of this slot should be given in the execution order. Defaults to 0. */
-    var priority: Int { get }
-
-    /** Whether the observer is called on execution. Defaults to true. */
-    var enabled: Bool { get set }
+    public func execute0() {
+        if !enabled { return }
+        if once { remove() }
+        
+        if let o = observer as? ((Any) -> Any?), let p = params {
+            if apply(fn: o, args: p) == nil { print("Observer: \(o) or Params: \(p) are Invalid") }
+        } else if let o = observer as? ((Any, Any) -> Any?), let p = params {
+            if apply(fn2: o, args: p) == nil { print("Observer: \(o) or Params: \(p) are Invalid") }
+        }
+        // Default
+        else if let o = observer as? () -> Any? {
+            _ = o()
+        }
+    }
     
-    /** Executes a observer without arguments. */
-    func execute0()
+    public func execute1() {
+        
+    }
     
-    /** Post one argument to a observer. */
-    func execute1()
+    public func execute(valueObjects: [Any]) {
+        
+    }
     
-    /** Executes a observer with n arguments. */
-    func execute(valueObjects:[Any])
-    
-    /** Removes the slot from its signal. */
-    func remove()
+    public func remove() {
+        _ = signal.remove(observer: observer)
+    }
     
 }
