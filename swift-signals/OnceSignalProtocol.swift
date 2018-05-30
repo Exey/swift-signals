@@ -21,7 +21,7 @@ public protocol OnceSignalProtocol {
     func post(valueObjects: Any...)
     
     /** Unsubscribes a observer from the signal. */
-    func remove(observer:Any) -> SlotProtocol
+    func remove(observer: Any) -> SlotProtocol
     
     /** Unsubscribes all observers from the signal. */
     func removeAll()

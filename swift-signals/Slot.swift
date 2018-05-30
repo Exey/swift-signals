@@ -35,15 +35,23 @@ public class Slot: SlotProtocol, CustomStringConvertible {
         if !enabled { return }
         if once { remove() }
         
-        if let o = observer as? ((Any) -> Any?), let p = params {
-            if apply(fn: o, args: p) == nil { print("Observer: \(o) or Params: \(p) are Invalid") }
-        } else if let o = observer as? ((Any, Any) -> Any?), let p = params {
-            if apply(fn2: o, args: p) == nil { print("Observer: \(o) or Params: \(p) are Invalid") }
-        }
+        if let o = observer as? ((Any) -> Any?), let p = params { if apply(fn: o, args: p) == nil { printError(o, p) } }
+        // 2
+        else if let o = observer as? ((Any, Any) -> Any?), let p = params { if apply(fn2: o, args: p) == nil { printError(o, p) } }
+        // 3
+        else if let o = observer as? ((Any, Any, Any) -> Any?), let p = params { if apply(fn3: o, args: p) == nil { printError(o, p) } }
+        // 4
+        else if let o = observer as? ((Any, Any, Any, Any) -> Any?), let p = params { if apply(fn4: o, args: p) == nil { printError(o, p) } }
+        // 5
+        else if let o = observer as? ((Any, Any, Any, Any, Any) -> Any?), let p = params { if apply(fn5: o, args: p) == nil { printError(o, p) } }
         // Default
         else if let o = observer as? () -> Any? {
             _ = o()
         }
+    }
+    
+    func printError(o:Any, p:[Any]) {
+        print("Observer: \(o) or Params: \(p) are Invalid")
     }
     
     public func execute1() {
